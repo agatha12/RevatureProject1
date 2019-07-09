@@ -1,12 +1,13 @@
 ﻿using BankEntities;
 using BankingApp.Models;
-//using Fluent.Infrastructure.FluentModel;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Http;
 
 namespace BankingApp.BusinessLayer
 {
@@ -14,7 +15,10 @@ namespace BankingApp.BusinessLayer
     {
         IList<Customer> Get();
         Customer Get(int? id);
+        void Add(Customer customer);
+       
     }
+   
 
     public class CustomerBL : ICustomerBL
     {
@@ -47,13 +51,19 @@ namespace BankingApp.BusinessLayer
             return customer;
         }
 
-        public Customer Post()
+        public void Add(Customer customer)
         {
-            var customer = new Customer();
 
-            //customer.email = User.Identity.Name;
 
-            return customer;
+
+            
+
+            _context.Customers.Add(customer);
+           _context.SaveChangesAsync();
+            
+
+            //return customer;
         }
+
     }
 }

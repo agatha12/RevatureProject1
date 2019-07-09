@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BankEntities;
 using BankingApp.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace BankingApp.Controllers
 {
@@ -60,6 +61,7 @@ namespace BankingApp.Controllers
             {
                 if (ModelState.IsValid)
                 {
+                    checking.type = "checking";
                     _context.Add(checking);
                     await _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
@@ -155,6 +157,11 @@ namespace BankingApp.Controllers
         private bool CheckingExists(int id)
         {
             return _context.Checking.Any(e => e.Id == id);
+        }
+        public string TestGet()
+        {
+            var val = HttpContext.Session.GetString("Name");
+            return val;
         }
     }
 }
