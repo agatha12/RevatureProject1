@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BankEntities;
 using BankingApp.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace BankingApp.Controllers
 {
@@ -23,6 +24,27 @@ namespace BankingApp.Controllers
         public async Task<IActionResult> Index()
         {
             return View(await _context.Term.ToListAsync());
+        }
+
+        public async Task<IActionResult> MyTerm()
+        {
+
+
+            var id = sessionGetId();
+
+            var term = await _context.Term.Where(t => t.CustomerId == id).ToListAsync();
+
+
+            if (term.Count == 0)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                return View(term);
+            }
+
+
         }
 
         // GET: Terms/Details/5
@@ -58,6 +80,10 @@ namespace BankingApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                term.CustomerId = (int)sessionGetId();
+                term.InterestRate = 3;
+                term.type = "term";
+                term.createdAt = DateTime.Now;
                 _context.Add(term);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -148,6 +174,11 @@ namespace BankingApp.Controllers
         private bool TermExists(int id)
         {
             return _context.Term.Any(e => e.Id == id);
+        }
+        public int? sessionGetId()
+        {
+            var val = HttpContext.Session.GetInt32("Id");
+            return val;
         }
     }
 }

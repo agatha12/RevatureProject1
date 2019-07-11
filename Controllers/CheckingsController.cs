@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BankEntities;
 using BankingApp.Models;
 using Microsoft.AspNetCore.Http;
+using BankingApp.DAL;
 
 namespace BankingApp.Controllers
 {
@@ -24,6 +25,26 @@ namespace BankingApp.Controllers
         public async Task<IActionResult> Index()
         {
             return View(await _context.Checking.ToListAsync());
+        }
+
+        public async Task<IActionResult> MyChecking()
+        {
+
+            
+            var id = sessionGetId();
+
+            var check = await _context.Checking.Where(c => c.CustomerId == id).ToListAsync();
+
+            
+            if (check.Count == 0)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else {
+                return View(check);
+            }
+
+            
         }
 
         // GET: Checkings/Details/5
@@ -62,9 +83,10 @@ namespace BankingApp.Controllers
                 if (ModelState.IsValid)
                 {
                     checking.type = "checking";
+                    checking.CustomerId = (int)sessionGetId();
                     _context.Add(checking);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction("Index", "Home");
                 }
             }
             catch
@@ -158,9 +180,10 @@ namespace BankingApp.Controllers
         {
             return _context.Checking.Any(e => e.Id == id);
         }
-        public string TestGet()
+
+        public int? sessionGetId()
         {
-            var val = HttpContext.Session.GetString("Name");
+            var val = HttpContext.Session.GetInt32("Id");
             return val;
         }
     }

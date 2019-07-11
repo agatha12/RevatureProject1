@@ -1,0 +1,29 @@
+﻿
+@{
+    ViewData["Title"] = "Menu";
+}
+
+    <h1>Welcome to the Bank </h1>
+
+    <h2>@ViewData["Fname"] @ViewData["Lname"]</h2>
+
+    <div>
+        <h4>Create a new account</h4>
+        <a class="nav-link text-dark" asp-area="" asp-controller="Checkings" asp-action="Create">Create Checking account</a>
+        <a class="nav-link text-dark" asp-area="" asp-controller="Businesses" asp-action="Create">Create Business account</a>
+        <a class="nav-link text-dark" asp-area="" asp-controller="Terms" asp-action="Create">Create Term account</a>
+        <a class="nav-link text-dark" asp-area="" asp-controller="Loans" asp-action="Create">Take out a Loan</a>
+    </div>  
+
+
+    <div>
+        <h4>UserAccounts</h4>
+        @*@Html.Action("MyChecking", "Checking")*@
+        @*@await Html.PartialAsync("~/Views/Checkings/MyChecking.cshtml")*@
+        @*@{
+            await Html.RenderPartialAsync("../Checkings/MyChecking");
+        }*@
+        <a class="nav-link text-dark" asp-area="" asp-controller="Checkings" asp-action="MyChecking">View Your Checking Accounts</a>
+        <a class="nav-link text-dark" asp-area="" asp-controller="Businesses" asp-action="MyBusiness">View Your Business Accounts</a>
+    </div>
+

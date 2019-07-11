@@ -65,12 +65,13 @@ namespace BankingApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                //customer.Id = sessionGetId();
+                
+                
                  _context.Add(customer);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Home");
             }
-            return View(customer);
+            return View();
         }
 
         //GET: Customers/Edit/5
@@ -162,10 +163,17 @@ namespace BankingApp.Controllers
             var val = HttpContext.Session.GetString("Id");
             return val;
         }
+        public void sessionSet(int id)
+        {
+            
+            HttpContext.Session.SetInt32("ID", id);
+            
+        }
+
 
 
 
 
     }
-  
+
 }
