@@ -44,7 +44,17 @@ html {
 body {
   /* Margin bottom by footer height */
   margin-bottom: 60px;
+  background-color: white;
+  color: black;
 }
+
+div {
+    margin: 0 auto;
+    border-color: white;
+    border: solid 3px;
+}
+
+
 .footer {
   position: absolute;
   bottom: 0;

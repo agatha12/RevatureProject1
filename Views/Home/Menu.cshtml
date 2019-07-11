@@ -17,7 +17,7 @@
 
 
     <div>
-        <h4>UserAccounts</h4>
+        <h4>View Existing Accounts</h4>
         @*@Html.Action("MyChecking", "Checking")*@
         @*@await Html.PartialAsync("~/Views/Checkings/MyChecking.cshtml")*@
         @*@{
@@ -25,5 +25,8 @@
         }*@
         <a class="nav-link text-dark" asp-area="" asp-controller="Checkings" asp-action="MyChecking">View Your Checking Accounts</a>
         <a class="nav-link text-dark" asp-area="" asp-controller="Businesses" asp-action="MyBusiness">View Your Business Accounts</a>
+        <a class="nav-link text-dark" asp-area="" asp-controller="Terms" asp-action="MyTerm">View Your Term Accounts</a>
+        <a class="nav-link text-dark" asp-area="" asp-controller="Loans" asp-action="MyLoan">View Your Loan Accounts</a>
+
     </div>
 

@@ -86,7 +86,7 @@ namespace BankingApp.Controllers
                 term.createdAt = DateTime.Now;
                 _context.Add(term);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("MyTerm", "Terms");
             }
             return View(term);
         }

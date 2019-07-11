@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BankEntities;
 using BankingApp.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace BankingApp.Controllers
 {
@@ -23,6 +24,26 @@ namespace BankingApp.Controllers
         public async Task<IActionResult> Index()
         {
             return View(await _context.Loan.ToListAsync());
+        }
+        public async Task<IActionResult> MyLoan()
+        {
+
+
+            var id = sessionGetId();
+
+            var loan = await _context.Loan.Where(l => l.CustomerId == id).ToListAsync();
+
+
+            if (loan.Count == 0)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                return View(loan);
+            }
+
+
         }
 
         // GET: Loans/Details/5
@@ -58,9 +79,13 @@ namespace BankingApp.Controllers
         {
             if (ModelState.IsValid)
             {
+                loan.CustomerId = (int)sessionGetId();
+                loan.Balance = (0 - loan.Balance);
+                loan.type = "loan";
+                loan.InterestRate = 4.5;
                 _context.Add(loan);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("MyLoan", "Loans");
             }
             return View(loan);
         }
@@ -148,6 +173,11 @@ namespace BankingApp.Controllers
         private bool LoanExists(int id)
         {
             return _context.Loan.Any(e => e.Id == id);
+        }
+        public int? sessionGetId()
+        {
+            var val = HttpContext.Session.GetInt32("Id");
+            return val;
         }
     }
 }

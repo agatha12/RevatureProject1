@@ -85,7 +85,7 @@ namespace BankingApp.Controllers
 
                 _context.Add(business);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("MyBusiness", "Businesses");
             }
             return View(business);
         }

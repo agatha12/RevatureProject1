@@ -47,6 +47,132 @@ namespace BankingApp.Controllers
             
         }
 
+        public IActionResult Withdraw(int id)
+        {
+
+            //var check = await _context.Checking.FirstOrDefaultAsync(c => c.Id == id);
+
+            ViewData["Id"] = id;
+                return View();
+            
+    
+           
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Withdraw(int id, int amount)
+        {
+    
+
+            try
+            {
+                Checking checking = new Checking();
+                checking = await _context.Checking.FirstOrDefaultAsync(c => c.Id == id);
+
+                if (checking.Balance < amount)
+                {
+                    ViewData["ErrorMessage"] = $"You tried to withdraw ${amount} but your balance is only ${checking.Balance}";
+                    return View();
+                }
+                else {
+                    var newBalance = (checking.Balance - amount);
+                    checking.Balance = newBalance;
+
+
+                    _context.Update(checking);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch 
+            {
+                ViewData["ErrorMessage"] = "There was a problem with your withdrawl please try again";
+                return View();
+            }
+            return RedirectToAction(nameof(MyChecking));
+
+            
+        }
+
+        public IActionResult Deposit(int id)
+        {
+
+            //var check = await _context.Checking.FirstOrDefaultAsync(c => c.Id == id);
+
+            ViewData["Id"] = id;
+            return View();
+
+
+
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Deposit(int id, int amount)
+        {
+
+
+            try
+            {
+                Checking checking = new Checking();
+                checking = await _context.Checking.FirstOrDefaultAsync(c => c.Id == id);
+
+
+                    var newBalance = (checking.Balance + amount);
+                    checking.Balance = newBalance;
+
+
+                    _context.Update(checking);
+                    await _context.SaveChangesAsync();
+                
+            }
+            catch
+            {
+                ViewData["ErrorMessage"] = "There was a problem with your withdrawl please try again";
+                return View();
+            }
+            return RedirectToAction(nameof(MyChecking));
+
+
+        }
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Withdraw(int id, int amount, [Bind("Id,type,CustomerId,InterestRate,Balance")] Checking checking)
+        //{
+
+
+        //    if (id != checking.Id)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            var Newamount = amount;
+        //            _context.Update(checking);
+        //            await _context.SaveChangesAsync();
+        //        }
+        //        catch (DbUpdateConcurrencyException)
+        //        {
+        //            if (!CheckingExists(checking.Id))
+        //            {
+        //                return NotFound();
+        //            }
+        //            else
+        //            {
+        //                throw;
+        //            }
+        //        }
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(checking);
+        //}
+
         // GET: Checkings/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -84,9 +210,10 @@ namespace BankingApp.Controllers
                 {
                     checking.type = "checking";
                     checking.CustomerId = (int)sessionGetId();
+                    checking.InterestRate = 2.2;
                     _context.Add(checking);
                     await _context.SaveChangesAsync();
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("MyChecking", "Checkings");
                 }
             }
             catch
