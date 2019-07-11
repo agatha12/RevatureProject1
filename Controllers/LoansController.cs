@@ -46,6 +46,63 @@ namespace BankingApp.Controllers
 
         }
 
+        public IActionResult Payment(int id)
+        {
+
+
+            ViewData["Id"] = id;
+            return View();
+
+
+
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Payment(int id, int amount)
+        {
+
+
+            try
+            {
+                Loan loan = new Loan();
+                loan = await _context.Loan.FirstOrDefaultAsync(c => c.Id == id);
+
+                var x = 0 - amount;
+
+
+                if (x < loan.Balance)
+                {
+                    ViewData["ErrorMessage"] = "You can not pay more than the balance of your loan";
+                    return View();
+                }
+                else
+                {
+
+
+              
+
+                    var newBalance = (loan.Balance + amount);
+                    loan.Balance = newBalance;
+
+
+                    _context.Update(loan);
+                    await _context.SaveChangesAsync();
+                }
+
+            }
+            catch
+            {
+                ViewData["ErrorMessage"] = "There was a problem with your payment please try again";
+                return View();
+            }
+            return RedirectToAction(nameof(MyLoan));
+
+
+        }
+
+
         // GET: Loans/Details/5
         public async Task<IActionResult> Details(int? id)
         {

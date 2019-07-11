@@ -47,6 +47,103 @@ namespace BankingApp.Controllers
 
         }
 
+        public IActionResult Withdraw(int id)
+        {
+
+            ViewData["Id"] = id;
+            return View();
+
+
+
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Withdraw(int id, int amount)
+        {
+
+
+            try
+            {
+                Term term = new Term();
+                term = await _context.Term.FirstOrDefaultAsync(c => c.Id == id);
+                int difference = DateTime.Compare(DateTime.Now, term.createdAt.AddMonths(6));
+
+                if (difference <= 0)
+                {
+                    
+                        ViewData["ErrorMessage"] = $"You can not withdraw from this account until {term.createdAt.AddMonths(6)}";
+                    return View();
+                }
+
+                else if (term.Balance < amount)
+                {
+                    ViewData["ErrorMessage"] = $"You tried to withdraw ${amount} but your balance is only ${term.Balance}";
+                    return View();
+                }
+                else
+                {
+                    var newBalance = (term.Balance - amount);
+                    term.Balance = newBalance;
+
+
+                    _context.Update(term);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch
+            {
+                ViewData["ErrorMessage"] = "There was a problem with your withdrawl please try again";
+                return View();
+            }
+            return RedirectToAction(nameof(MyTerm));
+
+
+        }
+
+        public IActionResult Deposit(int id)
+        {
+
+
+            ViewData["Id"] = id;
+            return View();
+
+
+
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Deposit(int id, int amount)
+        {
+
+
+            try
+            {
+                Term term = new Term();
+                term = await _context.Term.FirstOrDefaultAsync(c => c.Id == id);
+
+
+                var newBalance = (term.Balance + amount);
+                term.Balance = newBalance;
+
+
+                _context.Update(term);
+                await _context.SaveChangesAsync();
+
+            }
+            catch
+            {
+                ViewData["ErrorMessage"] = "There was a problem with your deposit please try again";
+                return View();
+            }
+            return RedirectToAction(nameof(MyTerm));
+
+
+        }
+
         // GET: Terms/Details/5
         public async Task<IActionResult> Details(int? id)
         {

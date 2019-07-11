@@ -46,6 +46,189 @@ namespace BankingApp.Controllers
 
         }
 
+
+        public IActionResult Withdraw(int id)
+        {
+
+
+            ViewData["Id"] = id;
+            return View();
+
+
+
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Withdraw(int id, int amount)
+        {
+
+
+            try
+            {
+                Business business = new Business();
+                business = await _context.Business.FirstOrDefaultAsync(c => c.Id == id);
+
+ 
+         
+                    var newBalance = (business.Balance - amount);
+                    business.Balance = newBalance;
+
+
+                    _context.Update(business);
+                    await _context.SaveChangesAsync();
+                
+            }
+            catch
+            {
+                ViewData["ErrorMessage"] = "There was a problem with your withdrawl please try again";
+                return View();
+            }
+            return RedirectToAction(nameof(MyBusiness));
+
+
+        }
+
+        public IActionResult Deposit(int id)
+        {
+
+         
+
+            ViewData["Id"] = id;
+            return View();
+
+
+
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Deposit(int id, int amount)
+        {
+
+
+
+            try
+            {
+                Business business = new Business();
+                business = await _context.Business.FirstOrDefaultAsync(c => c.Id == id);
+
+                
+                    var newBalance = (business.Balance + amount);
+                    business.Balance = newBalance;
+
+
+                    _context.Update(business);
+                    await _context.SaveChangesAsync();
+                
+            }
+            catch
+            {
+                ViewData["ErrorMessage"] = "There was a problem with your withdrawl please try again";
+                return View();
+            }
+            return RedirectToAction(nameof(MyBusiness));
+
+
+        }
+
+        public IActionResult Transfer(int id)
+        {
+
+
+            ViewData["Id"] = id;
+            return View();
+
+
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Transfer(int id, int amount, int tid, string type)
+        {
+
+
+            try
+            {
+                Business business = new Business();
+                business = await _context.Business.FirstOrDefaultAsync(c => c.Id == id);
+
+                if (type == "checking")
+                {
+                    Checking tochecking = new Checking();
+                    tochecking = await _context.Checking.FirstOrDefaultAsync(c => c.Id == tid);
+
+                    if (tochecking != null)
+                    {
+
+                        var newBalance = (business.Balance - amount);
+                        business.Balance = newBalance;
+
+
+                        _context.Update(business);
+                        await _context.SaveChangesAsync();
+
+
+                        var tonewBalance = (tochecking.Balance + amount);
+                            tochecking.Balance = tonewBalance;
+
+
+                            _context.Update(tochecking);
+                            await _context.SaveChangesAsync();
+                        
+                    }
+                    else
+                    {
+                        ViewData["ErrorMessage"] = $"Please enter a valid account to transfer into.";
+                        return View();
+                    }
+                }
+                else
+                {
+                    Business tobusiness = new Business();
+                    tobusiness = await _context.Business.FirstOrDefaultAsync(c => c.Id == tid);
+
+
+
+                    if (tobusiness != null)
+                    {
+
+                        var newBalance = (business.Balance - amount);
+                        business.Balance = newBalance;
+
+
+                        _context.Update(business);
+                        await _context.SaveChangesAsync();
+
+
+                        var tonewBalance = (tobusiness.Balance + amount);
+                            tobusiness.Balance = tonewBalance;
+
+
+                            _context.Update(tobusiness);
+                            await _context.SaveChangesAsync();
+                        
+                    }
+                    else
+                    {
+                        ViewData["ErrorMessage"] = $"Please enter a valid account to transfer into.";
+                        return View();
+                    }
+                }
+            }
+            catch
+            {
+                ViewData["ErrorMessage"] = "There was a problem with your withdrawl please try again";
+                return View();
+            }
+            return RedirectToAction(nameof(MyBusiness));
+
+
+        }
+
         // GET: Businesses/Details/5
         public async Task<IActionResult> Details(int? id)
         {

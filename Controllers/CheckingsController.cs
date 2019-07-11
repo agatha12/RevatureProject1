@@ -50,7 +50,6 @@ namespace BankingApp.Controllers
         public IActionResult Withdraw(int id)
         {
 
-            //var check = await _context.Checking.FirstOrDefaultAsync(c => c.Id == id);
 
             ViewData["Id"] = id;
                 return View();
@@ -98,7 +97,6 @@ namespace BankingApp.Controllers
         public IActionResult Deposit(int id)
         {
 
-            //var check = await _context.Checking.FirstOrDefaultAsync(c => c.Id == id);
 
             ViewData["Id"] = id;
             return View();
@@ -130,6 +128,112 @@ namespace BankingApp.Controllers
             }
             catch
             {
+                ViewData["ErrorMessage"] = "There was a problem with your deposit please try again";
+                return View();
+            }
+            return RedirectToAction(nameof(MyChecking));
+
+
+        }
+
+        public IActionResult Transfer(int id)
+        {
+
+
+            ViewData["Id"] = id;
+            return View();
+
+
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Transfer(int id, int amount, int tid, string type)
+        {
+
+
+            try
+            {
+                Checking checking = new Checking();
+                checking = await _context.Checking.FirstOrDefaultAsync(c => c.Id == id);
+
+                if (type == "checking")
+                {
+                    Checking tochecking = new Checking();
+                    tochecking = await _context.Checking.FirstOrDefaultAsync(c => c.Id == tid);
+
+                    if (tochecking != null)
+                    {
+                        if (checking.Balance < amount)
+                        {
+                            ViewData["ErrorMessage"] = $"You tried to transfer ${amount} but your balance is only ${checking.Balance}";
+                            return View();
+                        }
+                        else
+                        {
+                            var newBalance = (checking.Balance - amount);
+                            checking.Balance = newBalance;
+
+
+                            _context.Update(checking);
+                            await _context.SaveChangesAsync();
+
+                            var tonewBalance = (tochecking.Balance + amount);
+                            tochecking.Balance = tonewBalance;
+
+
+                            _context.Update(tochecking);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                    else
+                    {
+                        ViewData["ErrorMessage"] = $"Please enter a valid account to transfer into.";
+                        return View();
+                    }
+                }
+                else
+                {
+                    Business business = new Business();
+                    business = await _context.Business.FirstOrDefaultAsync(c => c.Id == tid);
+
+
+
+                    if (business != null)
+                    {
+                        if (checking.Balance < amount)
+                        {
+                            ViewData["ErrorMessage"] = $"You tried to transfer ${amount} but your balance is only ${checking.Balance}";
+                            return View();
+                        }
+                        else
+                        {
+                            var newBalance = (checking.Balance - amount);
+                            checking.Balance = newBalance;
+
+
+                            _context.Update(checking);
+                            await _context.SaveChangesAsync();
+
+
+                            var tonewBalance = (business.Balance + amount);
+                            business.Balance = tonewBalance;
+
+
+                            _context.Update(business);
+                            await _context.SaveChangesAsync();
+                        }
+                    }
+                    else
+                    {
+                        ViewData["ErrorMessage"] = $"Please enter a valid account to transfer into.";
+                        return View();
+                    }
+                }
+            }
+            catch
+            {
                 ViewData["ErrorMessage"] = "There was a problem with your withdrawl please try again";
                 return View();
             }
@@ -138,40 +242,6 @@ namespace BankingApp.Controllers
 
         }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Withdraw(int id, int amount, [Bind("Id,type,CustomerId,InterestRate,Balance")] Checking checking)
-        //{
-
-
-        //    if (id != checking.Id)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            var Newamount = amount;
-        //            _context.Update(checking);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!CheckingExists(checking.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(checking);
-        //}
 
         // GET: Checkings/Details/5
         public async Task<IActionResult> Details(int? id)

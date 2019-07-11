@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewData["Title"] = "Withdraw";
+}
+
+<h1>Withdraw</h1>
+
+<p>@ViewData["ErrorMessage"]</p>
+
+
+<form asp-action="Withdraw">
+    <label>How much do you want to withdraw?</label>
+    <input type="number" name="amount" />
+    <input type="hidden" asp-for=@ViewData["Id"] />
+    <input type="submit" value="Withdraw" class="btn btn-default" />
+</form>
