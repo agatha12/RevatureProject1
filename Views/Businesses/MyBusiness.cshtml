@@ -55,7 +55,8 @@
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
                 <a asp-action="Withdraw" asp-route-id="@item.Id">Withdraw</a> |
                 <a asp-action="Deposit" asp-route-id="@item.Id">Deposit</a>|
-                <a asp-action="Transfer" asp-route-id="@item.Id">Transfer</a>
+                <a asp-action="Transfer" asp-route-id="@item.Id">Transfer</a> |
+                <a asp-controller="Transactions" asp-action="GetLog" asp-route-id="@item.Id" asp-route-type="business">View Transaction Log</a>
             </td>
         </tr>
 }

@@ -25,6 +25,12 @@ namespace BankingApp.Controllers
             return View(await _context.Transaction.ToListAsync());
         }
 
+        public async Task<IActionResult> GetLog(int id, string type)
+        {
+            var log = await _context.Transaction.Where(t => t.accountId == id && t.accountType == type).ToListAsync();
+            return View(log);
+        }
+
         // GET: Transactions/Details/5
         public async Task<IActionResult> Details(int? id)
         {

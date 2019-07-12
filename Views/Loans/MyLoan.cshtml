@@ -51,9 +51,10 @@
             </td>
             <td>
                 @*<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |*@
+        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |*@
                 <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
-                <a asp-action="Payment" asp-route-id="@item.Id">Make a Payment</a>
+                <a asp-action="Payment" asp-route-id="@item.Id">Make a Payment</a> |
+                <a asp-controller="Transactions" asp-action="GetLog" asp-route-id="@item.Id" asp-route-type="loan">View Transaction Log</a>
             </td>
         </tr>
 }
