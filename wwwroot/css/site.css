@@ -50,7 +50,7 @@ body {
     width: 60px;
 }
 #logo{
-    width: 130px;
+    width: 110px;
 }
 .carousel-item{
     height: 60vh;
@@ -59,12 +59,7 @@ body {
 .welcome{
     text-align: center;
 }
-/*#createDiv{
- width: 
-}
-#accountDiv{
 
-}*/
 .accntDiv{
     width: 50%;
     float: right;
