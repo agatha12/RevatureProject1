@@ -464,7 +464,7 @@ namespace BankingApp.Controllers
             {
                 _context.Checking.Remove(checking);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(MyChecking));
             }
         }
 

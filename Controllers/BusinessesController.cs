@@ -454,7 +454,7 @@ namespace BankingApp.Controllers
             {
                 _context.Business.Remove(business);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(MyBusiness));
             }
         }
 

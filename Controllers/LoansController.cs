@@ -349,7 +349,7 @@ namespace BankingApp.Controllers
             {
                 _context.Loan.Remove(loan);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(MyLoan));
             }
         }
 

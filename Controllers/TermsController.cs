@@ -303,7 +303,7 @@ namespace BankingApp.Controllers
 
                 _context.Term.Remove(term);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(MyTerm));
             }
         }
 
