@@ -196,7 +196,12 @@ namespace BankingApp.Controllers
 
                     if (tochecking != null)
                     {
-                        if (checking.Balance < amount)
+                        if (checking.CustomerId != tochecking.CustomerId)
+                        {
+                            ViewData["ErrorMessage"] = $"You can only transfer between your own accounts";
+                            return View();
+                        }
+                        else if (checking.Balance < amount)
                         {
                             ViewData["ErrorMessage"] = $"You tried to transfer ${amount} but your balance is only ${checking.Balance}";
                             return View();
@@ -256,7 +261,12 @@ namespace BankingApp.Controllers
 
                     if (business != null)
                     {
-                        if (checking.Balance < amount)
+                        if (checking.CustomerId != business.CustomerId)
+                        {
+                            ViewData["ErrorMessage"] = $"You can only transfer between your own accounts";
+                            return View();
+                        }
+                        else if (checking.Balance < amount)
                         {
                             ViewData["ErrorMessage"] = $"You tried to transfer ${amount} but your balance is only ${checking.Balance}";
                             return View();

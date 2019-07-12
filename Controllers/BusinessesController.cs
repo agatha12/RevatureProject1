@@ -192,45 +192,53 @@ namespace BankingApp.Controllers
 
                     if (tochecking != null)
                     {
+                        if (business.CustomerId != tochecking.CustomerId)
+                        {
+                            ViewData["ErrorMessage"] = $"You can only transfer between your own accounts";
+                            return View();
+                        }
+                        else
+                        {
 
-                        var newBalance = (business.Balance - amount);
-                        business.Balance = newBalance;
-
-
-                        Transaction transaction = new Transaction();
-                        transaction.accountId = id;
-                        transaction.accountType = "business";
-                        transaction.amount = amount;
-                        transaction.date = DateTime.Now;
-                        transaction.type = "transfer out";
-
-                        _context.Update(business);
-                        await _context.SaveChangesAsync();
+                            var newBalance = (business.Balance - amount);
+                            business.Balance = newBalance;
 
 
-                        _context.Update(transaction);
-                        await _context.SaveChangesAsync();
+                            Transaction transaction = new Transaction();
+                            transaction.accountId = id;
+                            transaction.accountType = "business";
+                            transaction.amount = amount;
+                            transaction.date = DateTime.Now;
+                            transaction.type = "transfer out";
+
+                            _context.Update(business);
+                            await _context.SaveChangesAsync();
+
+
+                            _context.Update(transaction);
+                            await _context.SaveChangesAsync();
 
 
 
-                        var tonewBalance = (tochecking.Balance + amount);
+                            var tonewBalance = (tochecking.Balance + amount);
                             tochecking.Balance = tonewBalance;
 
 
-                        Transaction totransaction = new Transaction();
-                        totransaction.accountId = tid;
-                        totransaction.accountType = "checking";
-                        totransaction.amount = amount;
-                        totransaction.date = DateTime.Now;
-                        totransaction.type = "transfer in";
+                            Transaction totransaction = new Transaction();
+                            totransaction.accountId = tid;
+                            totransaction.accountType = "checking";
+                            totransaction.amount = amount;
+                            totransaction.date = DateTime.Now;
+                            totransaction.type = "transfer in";
 
 
-                        _context.Update(tochecking);
-                        await _context.SaveChangesAsync();
+                            _context.Update(tochecking);
+                            await _context.SaveChangesAsync();
 
 
-                        _context.Update(totransaction);
-                        await _context.SaveChangesAsync();
+                            _context.Update(totransaction);
+                            await _context.SaveChangesAsync();
+                        }
 
 
                         
@@ -250,45 +258,52 @@ namespace BankingApp.Controllers
 
                     if (tobusiness != null)
                     {
+                        if (business.CustomerId != tobusiness.CustomerId)
+                        {
+                            ViewData["ErrorMessage"] = $"You can only transfer between your own accounts";
+                            return View();
+                        }
+                        else
+                        {
 
-                        var newBalance = (business.Balance - amount);
-                        business.Balance = newBalance;
-
-
-
-                        Transaction transaction = new Transaction();
-                        transaction.accountId = id;
-                        transaction.accountType = "business";
-                        transaction.amount = amount;
-                        transaction.date = DateTime.Now;
-                        transaction.type = "transfer out";
-
-                        _context.Update(business);
-                        await _context.SaveChangesAsync();
+                            var newBalance = (business.Balance - amount);
+                            business.Balance = newBalance;
 
 
-                        _context.Update(transaction);
-                        await _context.SaveChangesAsync();
+
+                            Transaction transaction = new Transaction();
+                            transaction.accountId = id;
+                            transaction.accountType = "business";
+                            transaction.amount = amount;
+                            transaction.date = DateTime.Now;
+                            transaction.type = "transfer out";
+
+                            _context.Update(business);
+                            await _context.SaveChangesAsync();
 
 
-                        var tonewBalance = (tobusiness.Balance + amount);
+                            _context.Update(transaction);
+                            await _context.SaveChangesAsync();
+
+
+                            var tonewBalance = (tobusiness.Balance + amount);
                             tobusiness.Balance = tonewBalance;
 
-                        Transaction totransaction = new Transaction();
-                        totransaction.accountId = tid;
-                        totransaction.accountType = "business";
-                        totransaction.amount = amount;
-                        totransaction.date = DateTime.Now;
-                        totransaction.type = "transfer in";
+                            Transaction totransaction = new Transaction();
+                            totransaction.accountId = tid;
+                            totransaction.accountType = "business";
+                            totransaction.amount = amount;
+                            totransaction.date = DateTime.Now;
+                            totransaction.type = "transfer in";
 
-                        _context.Update(tobusiness);
-                        await _context.SaveChangesAsync();
-
-
-                        _context.Update(totransaction);
-                        await _context.SaveChangesAsync();
+                            _context.Update(tobusiness);
+                            await _context.SaveChangesAsync();
 
 
+                            _context.Update(totransaction);
+                            await _context.SaveChangesAsync();
+
+                        }
  
                         
                     }

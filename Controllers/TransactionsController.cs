@@ -27,9 +27,30 @@ namespace BankingApp.Controllers
 
         public async Task<IActionResult> GetLog(int id, string type)
         {
+            ViewData["Id"] = id;
+            ViewData["Type"] = type;
             var log = await _context.Transaction.Where(t => t.accountId == id && t.accountType == type).ToListAsync();
             return View(log);
         }
+        public async Task<IActionResult> GetLast10(int id, string type)
+        {
+            ViewData["Id"] = id;
+            ViewData["Type"] = type;
+            var log = await _context.Transaction.Where(t => t.accountId == id && t.accountType == type).ToListAsync();
+            var x = log.Count;
+            var newLog = log.Skip(x - 10);
+            return View("GetLog", newLog);
+        }
+        //public async Task<IActionResult> GetRange(int id, string type, DateTime one, DateTime two)
+        //{
+        //    ViewData["Id"] = id;
+        //    ViewData["Type"] = type;
+        //    var log = await _context.Transaction.Where(t => t.accountId == id && t.accountType == type).ToListAsync();
+        //    var x = log.Count;
+        //    var newLog = log.Skip(x - 10);
+        //    return View("GetLog", newLog);
+        //}
+
 
         // GET: Transactions/Details/5
         public async Task<IActionResult> Details(int? id)

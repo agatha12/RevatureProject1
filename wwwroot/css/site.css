@@ -46,6 +46,31 @@ body {
   margin-bottom: 60px;
 
 }
+.logo{
+    width: 60px;
+}
+#logo{
+    width: 130px;
+}
+.carousel-item{
+    height: 60vh;
+}
+
+.welcome{
+    text-align: center;
+}
+/*#createDiv{
+ width: 
+}
+#accountDiv{
+
+}*/
+.accntDiv{
+    width: 50%;
+    float: right;
+    text-align: center;
+    padding: 30px;
+}
 
 
 

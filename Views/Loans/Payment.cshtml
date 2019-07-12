@@ -12,5 +12,10 @@
     <label>How much would you like to pay off?</label>
     <input type="number" name="amount" />
     <input type="hidden" asp-for=@ViewData["Id"] />
+    <label>What is the account type of the account you would like to pay from?</label><br />
+    <input type="radio" name="type" value="checking" checked> Checking<br>
+    <input type="radio" name="type" value="business"> Business<br>
+    <label>What is the account number of the account you would like pay from?</label>
+    <input type="number" name="tid" /><br />
     <input type="submit" value="Payment" class="btn btn-default" />
 </form>
