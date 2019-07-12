@@ -28,20 +28,28 @@ namespace BankingApp.Controllers
 
         public async Task<IActionResult> MyTerm()
         {
+            try
+            {
 
 
-            var id = sessionGetId();
+                var id = sessionGetId();
 
-            var term = await _context.Term.Where(t => t.CustomerId == id).ToListAsync();
+                var term = await _context.Term.Where(t => t.CustomerId == id).ToListAsync();
 
 
-            if (term.Count == 0)
+                if (term.Count == 0)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    return View(term);
+                }
+
+            }
+            catch
             {
                 return RedirectToAction("Index", "Home");
-            }
-            else
-            {
-                return View(term);
             }
 
 
@@ -87,9 +95,20 @@ namespace BankingApp.Controllers
                     var newBalance = (term.Balance - amount);
                     term.Balance = newBalance;
 
+                    Transaction transaction = new Transaction();
+                    transaction.accountId = id;
+                    transaction.accountType = "term";
+                    transaction.amount = amount;
+                    transaction.date = DateTime.Now;
+                    transaction.type = "withdraw";
 
                     _context.Update(term);
                     await _context.SaveChangesAsync();
+
+
+                    _context.Update(transaction);
+                    await _context.SaveChangesAsync();
+
                 }
             }
             catch
@@ -128,10 +147,20 @@ namespace BankingApp.Controllers
 
                 var newBalance = (term.Balance + amount);
                 term.Balance = newBalance;
-
+                Transaction transaction = new Transaction();
+                transaction.accountId = id;
+                transaction.accountType = "term";
+                transaction.amount = amount;
+                transaction.date = DateTime.Now;
+                transaction.type = "deposit";
 
                 _context.Update(term);
                 await _context.SaveChangesAsync();
+
+
+                _context.Update(transaction);
+                await _context.SaveChangesAsync();
+
 
             }
             catch
@@ -263,9 +292,19 @@ namespace BankingApp.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var term = await _context.Term.FindAsync(id);
-            _context.Term.Remove(term);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            if (term.Balance != 0)
+            {
+                ViewData["ErrorMessage"] = "You can not delete an account unless you balance is $0";
+                return View();
+            }
+            else
+            {
+
+                _context.Term.Remove(term);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         private bool TermExists(int id)

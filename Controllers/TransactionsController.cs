@@ -54,7 +54,7 @@ namespace BankingApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,accountId,amount,type,date")] Transaction transaction)
+        public async Task<IActionResult> Create([Bind("Id,accountType,accountId,amount,type,date")] Transaction transaction)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +86,7 @@ namespace BankingApp.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,accountId,amount,type,date")] Transaction transaction)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,accountType,accountId,amount,type,date")] Transaction transaction)
         {
             if (id != transaction.Id)
             {

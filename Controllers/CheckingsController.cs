@@ -29,21 +29,28 @@ namespace BankingApp.Controllers
 
         public async Task<IActionResult> MyChecking()
         {
+            try
+            {
 
-            
-            var id = sessionGetId();
 
-            var check = await _context.Checking.Where(c => c.CustomerId == id).ToListAsync();
+                var id = sessionGetId();
 
-            
-            if (check.Count == 0)
+                var check = await _context.Checking.Where(c => c.CustomerId == id).ToListAsync();
+
+
+                if (check.Count == 0)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    return View(check);
+                }
+            }
+            catch
             {
                 return RedirectToAction("Index", "Home");
             }
-            else {
-                return View(check);
-            }
-
             
         }
 
@@ -79,8 +86,19 @@ namespace BankingApp.Controllers
                     var newBalance = (checking.Balance - amount);
                     checking.Balance = newBalance;
 
+                  
+                    Transaction transaction = new Transaction();
+                    transaction.accountId = id;
+                    transaction.accountType = "checking";
+                    transaction.amount = amount;
+                    transaction.date = DateTime.Now;
+                    transaction.type = "withdraw";
 
                     _context.Update(checking);
+                    await _context.SaveChangesAsync();
+
+
+                    _context.Update(transaction);
                     await _context.SaveChangesAsync();
                 }
             }
@@ -121,9 +139,22 @@ namespace BankingApp.Controllers
                     var newBalance = (checking.Balance + amount);
                     checking.Balance = newBalance;
 
+                Transaction transaction = new Transaction();
+                transaction.accountId = id;
+                transaction.accountType = "checking";
+                transaction.amount = amount;
+                transaction.date = DateTime.Now;
+                transaction.type = "deposit";
 
-                    _context.Update(checking);
-                    await _context.SaveChangesAsync();
+                _context.Update(checking);
+                await _context.SaveChangesAsync();
+
+
+                _context.Update(transaction);
+                await _context.SaveChangesAsync();
+
+
+             
                 
             }
             catch
@@ -175,16 +206,39 @@ namespace BankingApp.Controllers
                             var newBalance = (checking.Balance - amount);
                             checking.Balance = newBalance;
 
+                            Transaction transaction = new Transaction();
+                            transaction.accountId = id;
+                            transaction.accountType = "checking";
+                            transaction.amount = amount;
+                            transaction.date = DateTime.Now;
+                            transaction.type = "transer out";
 
                             _context.Update(checking);
                             await _context.SaveChangesAsync();
 
+
+                            _context.Update(transaction);
+                            await _context.SaveChangesAsync();
+
+
                             var tonewBalance = (tochecking.Balance + amount);
                             tochecking.Balance = tonewBalance;
 
+                            Transaction totransaction = new Transaction();
+                            totransaction.accountId = tid;
+                            totransaction.accountType = "checking";
+                            totransaction.amount = amount;
+                            totransaction.date = DateTime.Now;
+                            totransaction.type = "transfer in";
 
                             _context.Update(tochecking);
                             await _context.SaveChangesAsync();
+
+
+                            _context.Update(totransaction);
+                            await _context.SaveChangesAsync();
+
+
                         }
                     }
                     else
@@ -212,16 +266,37 @@ namespace BankingApp.Controllers
                             var newBalance = (checking.Balance - amount);
                             checking.Balance = newBalance;
 
+                            Transaction transaction = new Transaction();
+                            transaction.accountId = id;
+                            transaction.accountType = "checking";
+                            transaction.amount = amount;
+                            transaction.date = DateTime.Now;
+                            transaction.type = "transer out";
+
 
                             _context.Update(checking);
+                            await _context.SaveChangesAsync();
+
+
+                            _context.Update(transaction);
                             await _context.SaveChangesAsync();
 
 
                             var tonewBalance = (business.Balance + amount);
                             business.Balance = tonewBalance;
 
+                            Transaction totransaction = new Transaction();
+                            totransaction.accountId = tid;
+                            totransaction.accountType = "business";
+                            totransaction.amount = amount;
+                            totransaction.date = DateTime.Now;
+                            totransaction.type = "transfer in";
+
 
                             _context.Update(business);
+                            await _context.SaveChangesAsync();
+
+                            _context.Update(totransaction);
                             await _context.SaveChangesAsync();
                         }
                     }
@@ -368,9 +443,19 @@ namespace BankingApp.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var checking = await _context.Checking.FindAsync(id);
-            _context.Checking.Remove(checking);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+
+            if (checking.Balance != 0)
+            {
+                ViewData["ErrorMessage"] = "You can not delete an account unless you balance is $0";
+                return View();
+            }
+            else
+            {
+                _context.Checking.Remove(checking);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         private bool CheckingExists(int id)

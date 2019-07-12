@@ -27,20 +27,27 @@ namespace BankingApp.Controllers
         }
         public async Task<IActionResult> MyLoan()
         {
+            try
+            {
 
 
-            var id = sessionGetId();
+                var id = sessionGetId();
 
-            var loan = await _context.Loan.Where(l => l.CustomerId == id).ToListAsync();
+                var loan = await _context.Loan.Where(l => l.CustomerId == id).ToListAsync();
 
 
-            if (loan.Count == 0)
+                if (loan.Count == 0)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    return View(loan);
+                }
+            }
+            catch
             {
                 return RedirectToAction("Index", "Home");
-            }
-            else
-            {
-                return View(loan);
             }
 
 
@@ -86,9 +93,20 @@ namespace BankingApp.Controllers
                     var newBalance = (loan.Balance + amount);
                     loan.Balance = newBalance;
 
+                    Transaction transaction = new Transaction();
+                    transaction.accountId = id;
+                    transaction.accountType = "loan";
+                    transaction.amount = amount;
+                    transaction.date = DateTime.Now;
+                    transaction.type = "made payment";
+
 
                     _context.Update(loan);
                     await _context.SaveChangesAsync();
+
+                    _context.Update(transaction);
+                    await _context.SaveChangesAsync();
+
                 }
 
             }
@@ -222,9 +240,19 @@ namespace BankingApp.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var loan = await _context.Loan.FindAsync(id);
-            _context.Loan.Remove(loan);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+
+            if (loan.Balance != 0)
+            {
+                ViewData["ErrorMessage"] = "You can not delete an account unless you balance is $0";
+                return View();
+            }
+            else
+            {
+                _context.Loan.Remove(loan);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         private bool LoanExists(int id)
